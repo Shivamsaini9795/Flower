@@ -1,14 +1,21 @@
-# Use official OpenJDK image
-FROM openjdk:17-jdk-slim
+# Use official OpenJDK 17 base image
+FROM eclipse-temurin:17-jdk
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy pom.xml and source code
-COPY . .
+# Copy Maven wrapper and pom.xml
+COPY mvnw pom.xml ./
+COPY .mvn .mvn
 
-# Build application (skip tests)
+# Download dependencies (better caching)
+RUN ./mvnw dependency:go-offline
+
+# Copy all source code
+COPY src ./src
+
+# Package the application (skip tests)
 RUN ./mvnw clean package -DskipTests
 
-# Run the jar file
-CMD ["java", "-jar", "target/*.jar"]
+# Run the Spring Boot app
+CMD ["java", "-jar", "target/flower-0.0.1-SNAPSHOT.jar"]
