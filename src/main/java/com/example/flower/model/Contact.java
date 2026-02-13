@@ -1,78 +1,56 @@
 package com.example.flower.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "contacts")
+@Document(collection = "contacts")   // MongoDB collection
 public class Contact {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;   // MongoDB ObjectId (String)
 
     private String name;
     private String email;
     private String phone;
     private String message;
 
-    // ✅ Automatically set when contact is created
-    @CreationTimestamp
-    @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor (required for JPA)
-    public Contact() {}
+    // ✅ Default constructor
+    public Contact() {
+        this.createdAt = LocalDateTime.now();  // auto timestamp
+    }
 
-    // Full constructor (optional)
+    // ✅ Full constructor
     public Contact(String name, String email, String phone, String message) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.message = message;
+        this.createdAt = LocalDateTime.now();  // auto timestamp
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // =========================
+    // Getters & Setters
+    // =========================
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -23,11 +23,11 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public Optional<Booking> getBookingById(Long id) {
+    public Optional<Booking> getBookingById(String id) {
         return bookingRepository.findById(id);
     }
 
-    public void deleteBooking(Long id) {
+    public void deleteBooking(String id) {
         if (bookingRepository.existsById(id)) {
             bookingRepository.deleteById(id);
         } else {
@@ -35,7 +35,7 @@ public class BookingService {
         }
     }
 
-    public Booking updateBooking(Long id, Booking updatedBooking) {
+    public Booking updateBooking(String id, Booking updatedBooking) {
         Booking existingBooking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
 

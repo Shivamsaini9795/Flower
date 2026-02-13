@@ -9,7 +9,7 @@ import com.example.flower.service.BookingService;
 
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin(origins = "*") // allow frontend (React / Admin Panel)
+@CrossOrigin(origins = "*")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -18,14 +18,14 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    /** ✅ POST - Create new booking (frontend form submission) */
+    /** ✅ POST - Create new booking */
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         Booking savedBooking = bookingService.save(booking);
         return ResponseEntity.ok(savedBooking);
     }
 
-    /** ✅ GET - Fetch all bookings (for admin dashboard) */
+    /** ✅ GET - Fetch all bookings */
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
@@ -34,7 +34,7 @@ public class BookingController {
 
     /** ✅ GET - Fetch single booking by ID */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBookingById(@PathVariable Long id) {
+    public ResponseEntity<?> getBookingById(@PathVariable String id) {
         Optional<Booking> booking = bookingService.getBookingById(id);
         if (booking.isPresent()) {
             return ResponseEntity.ok(booking.get());
@@ -43,9 +43,9 @@ public class BookingController {
         }
     }
 
-    /** ✅ PUT - Update booking details */
+    /** ✅ PUT - Update booking */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody Booking updatedBooking) {
+    public ResponseEntity<?> updateBooking(@PathVariable String id, @RequestBody Booking updatedBooking) {
         try {
             Booking booking = bookingService.updateBooking(id, updatedBooking);
             return ResponseEntity.ok(booking);
@@ -54,9 +54,9 @@ public class BookingController {
         }
     }
 
-    /** ✅ DELETE - Remove booking (for admin delete button) */
+    /** ✅ DELETE - Remove booking */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBooking(@PathVariable String id) {
         try {
             bookingService.deleteBooking(id);
             return ResponseEntity.ok("✅ Booking deleted successfully (ID: " + id + ")");
