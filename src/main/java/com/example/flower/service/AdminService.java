@@ -96,6 +96,7 @@ public class AdminService {
             }
 
             URL url = new URL("https://api.resend.com/emails");
+//            System.out.println("RESEND_API_KEY = " + apiKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -123,6 +124,7 @@ public class AdminService {
             e.printStackTrace();
         }
     }
+
 
 
     // 🔁 VERIFY OTP & RESET PASSWORD
