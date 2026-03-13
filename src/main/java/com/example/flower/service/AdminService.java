@@ -89,7 +89,7 @@ public class AdminService {
 
         try{
 
-            String apiKey = "re_D9wAhVpm_6Xn5L1UiTaSet2qbhseKiRd4";   // 🔑 yaha apna resend api key paste karo
+            String apiKey = "re_adjhRozt_PBh1uVyUiBaR4qD5tpdgbaSo";   // 🔑 yaha apna resend api key paste karo
 
             URL url = new URL("https://api.resend.com/emails");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
