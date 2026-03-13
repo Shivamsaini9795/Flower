@@ -22,7 +22,7 @@ public class AdminService {
     // 🔐 LOGIN
     public String login(String email, String password) {
 
-        if(email == null || password == null){
+        if (email == null || password == null) {
             return "Email and password required";
         }
 
@@ -37,13 +37,13 @@ public class AdminService {
 
 
     // 👤 CREATE ADMIN
-    public String createAdmin(String email, String password){
+    public String createAdmin(String email, String password) {
 
-        if(email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return "Invalid email format";
         }
 
-        if(adminRepository.findByEmail(email).isPresent()){
+        if (adminRepository.findByEmail(email).isPresent()) {
             return "Admin already exists";
         }
 
@@ -58,20 +58,20 @@ public class AdminService {
 
 
     // 📩 SEND OTP
-    public String sendOtp(String email){
+    public String sendOtp(String email) {
 
-        if(email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return "Invalid email format";
         }
 
         Admin admin = adminRepository.findByEmail(email).orElse(null);
 
-        if(admin == null){
+        if (admin == null) {
             return "If the email exists, OTP has been sent";
         }
 
         SecureRandom random = new SecureRandom();
-        String otp = String.valueOf(random.nextInt(900000) + 100000);
+        String otp = String.format("%06d", random.nextInt(1000000));
 
         admin.setOtp(otp);
         admin.setOtpExpiry(System.currentTimeMillis() + 5 * 60 * 1000);
@@ -85,11 +85,15 @@ public class AdminService {
 
 
     // 📧 SEND EMAIL USING RESEND API
-    private void sendEmail(String toEmail, String otp){
+    private void sendEmail(String toEmail, String otp) {
 
-        try{
+        try {
 
-            String apiKey = "re_XPyf3o8i_K9Rq2RfT7dbZM2ozGXNw4q12";   // 🔑 yaha apna resend api key paste karo
+            String apiKey = System.getenv("RESEND_API_KEY");
+
+            if (apiKey == null || apiKey.isEmpty()) {
+                throw new RuntimeException("RESEND_API_KEY not found in environment variables");
+            }
 
             URL url = new URL("https://api.resend.com/emails");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -107,34 +111,34 @@ public class AdminService {
                     + "\"html\":\"<h2>Your OTP is: " + otp + "</h2><p>This OTP expires in 5 minutes.</p>\""
                     + "}";
 
-            try(OutputStream os = conn.getOutputStream()){
+            try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = jsonInput.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
 
-            conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
+            System.out.println("Resend API Response Code: " + responseCode);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
     // 🔁 VERIFY OTP & RESET PASSWORD
-    public String verifyOtp(String email, String otp, String newPassword){
+    public String verifyOtp(String email, String otp, String newPassword) {
 
         Admin admin = adminRepository.findByEmail(email).orElse(null);
 
-        if(admin == null){
+        if (admin == null) {
             return "Admin not found";
         }
 
-        if(admin.getOtp() == null || !admin.getOtp().equals(otp)){
+        if (admin.getOtp() == null || !admin.getOtp().equals(otp)) {
             return "Invalid OTP";
         }
 
-        if(System.currentTimeMillis() > admin.getOtpExpiry()){
+        if (System.currentTimeMillis() > admin.getOtpExpiry()) {
             return "OTP Expired";
         }
 
@@ -146,5 +150,4 @@ public class AdminService {
 
         return "Password reset successful";
     }
-
 }
