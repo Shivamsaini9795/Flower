@@ -11,6 +11,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class AdminController {
 
+
     @Autowired
     private AdminService adminService;
 
@@ -55,6 +56,19 @@ public class AdminController {
         return adminService.sendOtp(email);
     }
 
+    // 🔁 RESEND OTP
+    @PostMapping("/resend-otp")
+    public String resendOtp(@RequestBody Map<String,String> request){
+
+        String email = request.get("email");
+
+        if(email == null){
+            return "Email required";
+        }
+
+        return adminService.sendOtp(email);
+    }
+
     // 🔁 VERIFY OTP & RESET PASSWORD
     @PostMapping("/verify-otp")
     public String verifyOtp(@RequestBody Map<String,String> request){
@@ -69,4 +83,6 @@ public class AdminController {
 
         return adminService.verifyOtp(email, otp, newPassword);
     }
+
+
 }
